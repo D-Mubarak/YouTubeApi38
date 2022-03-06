@@ -1,4 +1,4 @@
-package com.example.youtubeapi38.remote
+package com.example.youtubeapi38.data.remote
 
 import com.example.youtubeapi38.data.model.Playlist
 import retrofit2.Call

@@ -1,4 +1,4 @@
-package com.example.youtubeapi38.core.base
+package com.example.youtubeapi38.core.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater

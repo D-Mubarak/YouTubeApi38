@@ -3,14 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.NoInternetFragment">
+    tools:context=".ui.playlist.NoInternetActivity">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/ic_group_17"
-        android:id="@+id/iv_no_internet"/>
+        android:src="@drawable/no_internet"
+        android:id="@+id/iv_no_internet"
+        tools:ignore="ContentDescription" />
 
     <Button
         android:layout_width="match_parent"
@@ -19,6 +20,7 @@
         android:layout_marginHorizontal="16dp"
         android:layout_gravity="bottom"
         android:text="@string/try_again"
+        android:textAllCaps="false"
         android:layout_marginBottom="32dp"
         android:backgroundTint="#FF0000"/>
 

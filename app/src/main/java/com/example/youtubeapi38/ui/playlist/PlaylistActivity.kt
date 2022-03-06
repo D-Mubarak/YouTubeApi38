@@ -1,40 +1,62 @@
 package com.example.youtubeapi38.ui.playlist
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
-import com.example.youtubeapi38.base.BaseActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.youtubeapi38.core.network.result.Status
+import com.example.youtubeapi38.core.ui.BaseActivity
+import com.example.youtubeapi38.data.model.Playlist
 import com.example.youtubeapi38.databinding.ActivityPlaylistBinding
+import com.example.youtubeapi38.ui.detail.DetailActivity
 
-class PlaylistActivity : BaseActivity<PlaylistsViewModel,ActivityPlaylistBinding>() {
+class PlaylistActivity : BaseActivity<ViewModel, ActivityPlaylistBinding>() {
+    companion object {
+        const val ID = "id"
+    }
 
-    override val viewModel: PlaylistsViewModel by lazy {
-        ViewModelProvider(this)[PlaylistsViewModel::class.java]
+    private lateinit var adapter: PlaylistAdapter
+
+    override val viewModel: ViewModel by lazy {
+        ViewModelProvider(this)[ViewModel::class.java]
+    }
+
+    fun listener(id: String) {
+        Intent(this@PlaylistActivity, DetailActivity::class.java).apply {
+            putExtra(ID, id)
+            startActivity(this)
+        }
     }
 
     override fun initViewModel() {
         super.initViewModel()
 
-        viewModel.playlists().observe(this) {
-            Toast.makeText(this,it.kind,Toast.LENGTH_SHORT).show()
+        viewModel.loading.observe(this) {
+            binding.progressBar.isVisible = it
         }
+        viewModel.getPlaylists().observe(this) {
+            when (it.status) {
+                Status.LOADING -> viewModel.loading.postValue(true)
+                Status.SUCCESS -> {
+                    initRv(it.data)
+                    viewModel.loading.postValue(true)
+                }
+                Status.ERROR -> {
+                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+                    viewModel.loading.postValue(true)
+                }
+            }
+        }
+    }
+
+    private fun initRv(playlist: Playlist?) {
+        binding.playlistRv.layoutManager = LinearLayoutManager(this)
+        binding.playlistRv.adapter = adapter
     }
 
     override fun inflateViewBinding(inflater: LayoutInflater): ActivityPlaylistBinding {
         return ActivityPlaylistBinding.inflate(inflater)
     }
 }
-
-/*
-*
-Дз.
- 1. Создать свой ApiKey и ознакомиться с документацией
- 2. Добавить в класс playlist поле "items", отрисовать первых 2 экрана из фигмы (Проверка на интернет, и список всех PlayList)
- 3. Cделать переход на новую активити и передаете туда id и её отображаете тостом
-
-Также прочитайте про корутины желательно
-
-Доп: в PlayListActivity попробуйте реализовать пагинацию с помощью ViewType с RecyclerView
-
-*
-* */

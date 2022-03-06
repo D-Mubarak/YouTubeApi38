@@ -1,4 +1,4 @@
-package com.example.youtubeapi38.extensions
+package com.example.youtubeapi38.core.extensions
 
 import android.widget.ImageView
 import com.bumptech.glide.Glide
