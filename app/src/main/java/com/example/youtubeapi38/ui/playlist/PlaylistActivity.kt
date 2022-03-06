@@ -17,17 +17,8 @@ class PlaylistActivity : BaseActivity<ViewModel, ActivityPlaylistBinding>() {
         const val ID = "id"
     }
 
-    private lateinit var adapter: PlaylistAdapter
-
     override val viewModel: ViewModel by lazy {
         ViewModelProvider(this)[ViewModel::class.java]
-    }
-
-    fun listener(id: String) {
-        Intent(this@PlaylistActivity, DetailActivity::class.java).apply {
-            putExtra(ID, id)
-            startActivity(this)
-        }
     }
 
     override fun initViewModel() {
@@ -41,11 +32,11 @@ class PlaylistActivity : BaseActivity<ViewModel, ActivityPlaylistBinding>() {
                 Status.LOADING -> viewModel.loading.postValue(true)
                 Status.SUCCESS -> {
                     initRv(it.data)
-                    viewModel.loading.postValue(true)
+                    viewModel.loading.postValue(false)
                 }
                 Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
-                    viewModel.loading.postValue(true)
+                    viewModel.loading.postValue(false)
                 }
             }
         }
@@ -53,10 +44,17 @@ class PlaylistActivity : BaseActivity<ViewModel, ActivityPlaylistBinding>() {
 
     private fun initRv(playlist: Playlist?) {
         binding.playlistRv.layoutManager = LinearLayoutManager(this)
-        binding.playlistRv.adapter = adapter
+        binding.playlistRv.adapter = playlist?.items?.let { PlaylistAdapter(it, this::listener) }
     }
 
     override fun inflateViewBinding(inflater: LayoutInflater): ActivityPlaylistBinding {
         return ActivityPlaylistBinding.inflate(inflater)
+    }
+
+    fun listener(id: String) {
+        Intent(this@PlaylistActivity, DetailActivity::class.java).apply {
+            putExtra(ID, id)
+            startActivity(this)
+        }
     }
 }
